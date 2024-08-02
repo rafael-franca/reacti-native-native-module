@@ -8,6 +8,8 @@
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  NativeEventEmitter,
+  NativeModules,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -31,6 +33,7 @@ type SectionProps = PropsWithChildren<{
 
 function Section({children, title}: SectionProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+
   return (
     <View style={styles.sectionContainer}>
       <Text
@@ -61,6 +64,40 @@ function App(): React.JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  // console.log(NativeModules.Counter)
+
+  // NativeModules.Counter.getCount((value: unknown) => {
+  //   console.log("count is " + value)
+  // })
+
+  // NativeModules.Counter.increment()
+
+  // NativeModules.Counter.getCount((value: unknown) => {
+  //   console.log("count is " + value)
+  // })
+
+  // NativeModules.Counter.decrement()
+
+  // NativeModules.Counter.getCount((value: unknown) => {
+  //   console.log("count is " + value)
+  // })
+
+  const CounterEvents = new NativeEventEmitter(NativeModules.Counter)
+
+  CounterEvents.addListener(
+    "onIncrement",
+    res => console.log("onIncrement event", res)
+  )
+
+  CounterEvents.addListener(
+    "onDecrement",
+    res => console.log("onDecrement event", res)
+  )
+
+  NativeModules.Counter.increment()
+
+  NativeModules.Counter.decrement()
 
   return (
     <SafeAreaView style={backgroundStyle}>
